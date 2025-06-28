@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mt-3 text-center">
+      <h1>Listagem de amostras</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4 mt-3 text-center">
+      <form action="/sample/list" method="get">
+        <input type="text" name="search" placeholder="Nome do ponto" />
+        <button class="btn btn-secondary" type="submit">Buscar</button>
+      </form>
+    </div>
+    <div class="col-4 mt-3 text-start">
+      <form action="/sample/list" method="get">
+        <button class="btn btn-warning" type="submit">Limpar busca</button>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 mt-3 text-center">
+      <table class="table">
+        <thead>
+          <th>Nome</th>
+          <th>Data</th>
+          <th>Importação</th>
+          <th colspan="2">Ações</th>
+        </thead>
+        <tbody>
+          {{#each samples}}
+          <tr>
+            <td>{{this.point}}</td>
+            <td>{{this.date}}</td>
+            <td>{{this.importId}}</td>
+            <td>
+              <form action="/sample/edit/{{this.id}}" method="get">
+                <button class="btn btn-primary" type="submit">Editar</button>
+              </form>
+            </td>
+            <td>
+              <form action="/sample/delete" method="post">
+                <input type="hidden" name="id" value="{{this.id}}" />
+                <button class="btn btn-danger" type="submit">Excluir</button>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

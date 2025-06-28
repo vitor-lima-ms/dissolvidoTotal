@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row mt-3 text-center">
+    <h1>Escolher importação</h1>
+  </div>
+  <div class="row mt-3">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <form action="/sample/delete-import" method="post">
+        <select class="form-select" name="idSelection" required>
+          {{#each importIdsArray}}
+            <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+        <button class="btn btn-danger mt-3" type="submit">Excluir</button>
+      </form>
+    </div>
+    <div class="col-4"></div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 mt-3 text-center">
+            <h1>Importar via .csv</h1>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <form action="/sample/import" method="post" enctype="multipart/form-data">
+                <input type="file" name="csvFile" accept=".csv" required>
+                <button class="btn btn-primary mt-3" type="submit">Enviar</button>
+            </form>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>

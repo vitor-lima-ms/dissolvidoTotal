@@ -1,0 +1,5 @@
+[phases.setup]
+aptPkgs = ["...", "fonts-liberation"]
+
+[start]
+cmd = "node index.js"

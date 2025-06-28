@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row mt-3 text-center">
+        <div class="col-12">
+            <h1>Login</h1>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <form action="/auth/login" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Login</button>
+            </form>
+            <p><a href="/auth/forgot-password">Esqueci minha senha.</a></p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
