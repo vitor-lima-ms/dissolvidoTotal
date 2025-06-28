@@ -1,5 +1,4 @@
 const Sample = require("../models/Sample");
-const Parameter = require("../models/Parameter");
 
 const fs = require("fs");
 const csv = require("csv-parser");
