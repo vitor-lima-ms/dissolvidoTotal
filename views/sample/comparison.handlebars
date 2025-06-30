@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="row mt-3 mb-3 text-center">
+        <h1>Selecione os parâmetros</h1>
+    </div>
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <form action="" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="point">Ponto</label>
+                    <select class="form-control" name="point">
+                        {{#each points}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="dissolved">Parâmetro dissolvido</label>
+                    <select class="form-control" name="dissolved">
+                        {{#each dissolvedParameters}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="total">Parâmetro total</label>
+                    <select class="form-control" name="total">
+                        {{#each totalParameters}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit">Comparar</button>
+            </form>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>

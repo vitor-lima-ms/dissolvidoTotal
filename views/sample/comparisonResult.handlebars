@@ -1,0 +1,99 @@
+<div class="container">
+    <div class="row mt-3 mb-3 text-center">
+        <h1>{{pointName}}</h1>
+    </div>
+    <div class="row mb-3">
+        <div class="col-1">
+            <button class="btn btn-success" type="button" id="exportBtn">Download</button>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+    </div>
+    <div class="row">
+        <table class="table table-hover" id="tableToExport">
+            <thead>
+                <th>Data</th>
+                <th>Valor dissolvido</th>
+                <th>Valor total</th>
+                <th>Avaliação</th>
+            </thead>
+            <tbody>
+                {{#each data}}
+                <tr>
+                    <td>{{this.date}}</td>
+                    <td>{{this.dissolved}}</td>
+                    <td>{{this.total}}</td>
+                    <td>{{this.result}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function escapeCsvValue(string) {
+        const cleanString = string.replace(/"/g, '""')
+
+        if (/[",\n]/.test(cleanString)) {
+            return `"${cleanString}"`
+        }
+
+        return cleanString
+    }
+
+    function exportTableToCsv(table, fileName) {
+        const csvRows = []
+        const tableRows = table.querySelectorAll("tr")
+
+        for (const row of tableRows) {
+            const csvRow = []
+
+            const cells = row.querySelectorAll("th, td")
+
+            for (const cell of cells) {
+                csvRow.push(escapeCsvValue(cell.innerText.replace(".", ",")))
+            }
+
+            csvRows.push(csvRow.join(","))
+        }
+
+        const csvContent = csvRows.join("\n")
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf8;" })
+
+        const link = document.createElement("a")
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob)
+
+            link.setAttribute("href", url)
+            link.setAttribute("download", fileName)
+            link.style.visibility = "hidden"
+
+            document.body.appendChild(link)
+
+            link.click()
+
+            document.body.removeChild(link)
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const exportBtn = document.getElementById("exportBtn")
+
+        exportBtn.addEventListener("click", () => {
+            const table = document.getElementById("tableToExport")
+
+            exportTableToCsv(table, `{{ pointName }}.csv`)
+        })
+    })
+</script>
