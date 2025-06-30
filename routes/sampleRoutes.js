@@ -22,4 +22,7 @@ router.post(
 router.get("/delete-import", SampleController.deleteImportGet);
 router.post("/delete-import", SampleController.deleteImportPost);
 
+router.get("/comparison", SampleController.comparisonGet);
+router.post("/comparison", SampleController.comparisonPost);
+
 module.exports = router;

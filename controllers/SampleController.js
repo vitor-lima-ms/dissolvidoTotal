@@ -147,4 +147,74 @@ module.exports = class SampleController {
 
     res.redirect("/sample/list");
   }
+
+  static async comparisonGet(req, res) {
+    const samples = await Sample.findAll({ raw: true });
+
+    let points = [];
+    let parameters = [];
+    for (const sample of Object.entries(samples)) {
+      if (!points.includes(sample[1].point)) {
+        points.push(sample[1].point);
+      }
+
+      for (const parameter of Object.entries(sample[1].data)) {
+        if (!parameters.includes(parameter[0])) {
+          parameters.push(parameter[0]);
+        }
+      }
+    }
+
+    let dissolvedParameters = [];
+    let totalParameters = [];
+    for (const parameter of parameters) {
+      if (parameter.toLowerCase().includes("dissolvido")) {
+        dissolvedParameters.push(parameter);
+      } else if (parameter.toLowerCase().includes("total")) {
+        totalParameters.push(parameter);
+      }
+    }
+
+    points.sort();
+    dissolvedParameters.sort();
+    totalParameters.sort();
+
+    res.render("sample/comparison", {
+      points,
+      dissolvedParameters,
+      totalParameters,
+    });
+  }
+
+  static async comparisonPost(req, res) {
+    const pointName = req.body.point;
+    const dissolved = req.body.dissolved;
+    const total = req.body.total;
+
+    const pointSamples = await Sample.findAll({
+      raw: true,
+      where: { point: pointName },
+    });
+
+    let data = [];
+    for (const sample of pointSamples) {
+      if (sample.data[dissolved] && sample.data[total]) {
+        data.push({
+          date: sample.date,
+          dissolved: parseFloat(sample.data[dissolved].value.replace(",", ".")),
+          total: parseFloat(sample.data[total].value.replace(",", ".")),
+        });
+      }
+    }
+
+    for (const object of data) {
+      if (object.dissolved > object.total) {
+        object["result"] = "Erro";
+      } else {
+        object["result"] = "Ok";
+      }
+    }
+
+    res.render("sample/comparisonResult", { pointName, data: data });
+  }
 };
