@@ -8,7 +8,7 @@
             <form action="" method="post">
                 <div class="mb-3">
                     <label class="form-label" for="point">Ponto</label>
-                    <select class="form-control" name="point">
+                    <select class="form-control" name="point" multiple required>
                         {{#each points}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
@@ -16,7 +16,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="dissolved">Parâmetro dissolvido</label>
-                    <select class="form-control" name="dissolved">
+                    <select class="form-control" name="dissolved" multiple required>
                         {{#each dissolvedParameters}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
@@ -24,7 +24,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="total">Parâmetro total</label>
-                    <select class="form-control" name="total">
+                    <select class="form-control" name="total" multiple required>
                         {{#each totalParameters}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}

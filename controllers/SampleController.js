@@ -187,34 +187,67 @@ module.exports = class SampleController {
   }
 
   static async comparisonPost(req, res) {
-    const pointName = req.body.point;
-    const dissolved = req.body.dissolved;
-    const total = req.body.total;
+    let pointsNames = req.body.point;
+    let dissolveds = req.body.dissolved;
+    let totals = req.body.total;
 
-    const pointSamples = await Sample.findAll({
-      raw: true,
-      where: { point: pointName },
-    });
-
-    let data = [];
-    for (const sample of pointSamples) {
-      if (sample.data[dissolved] && sample.data[total]) {
-        data.push({
-          date: sample.date,
-          dissolved: parseFloat(sample.data[dissolved].value.replace(",", ".")),
-          total: parseFloat(sample.data[total].value.replace(",", ".")),
-        });
-      }
+    if (!Array.isArray(pointsNames)) {
+      pointsNames = [pointsNames];
     }
 
-    for (const object of data) {
-      if (object.dissolved > object.total) {
-        object["result"] = "Erro";
-      } else {
-        object["result"] = "Ok";
-      }
+    if (!Array.isArray(dissolveds)) {
+      dissolveds = [dissolveds];
     }
 
-    res.render("sample/comparisonResult", { pointName, data: data });
+    if (!Array.isArray(totals)) {
+      totals = [totals];
+    }
+
+    // const pointSamples = await Sample.findAll({
+    //   raw: true,
+    //   where: { point: pointName },
+    // });
+
+    // let data = [];
+    // for (const sample of pointSamples) {
+    //   if (sample.data[dissolved] && sample.data[total]) {
+    //     data.push({
+    //       date: sample.date,
+    //       dissolved: parseFloat(sample.data[dissolved].value.replace(",", ".")),
+    //       total: parseFloat(sample.data[total].value.replace(",", ".")),
+    //     });
+    //   }
+    // }
+
+    // for (const object of data) {
+    //   if (object.dissolved > object.total) {
+    //     object["result"] = "Erro";
+    //   } else {
+    //     object["result"] = "Ok";
+    //   }
+    // }
+
+    // res.render("sample/comparisonResult", { pointName, data });
+
+    const results = [];
+
+    for (const point of pointsNames) {
+      const pointSamples = await Sample.findAll({
+        raw: true,
+        where: { point: point },
+      });
+      const pointData = {};
+      pointData[point] = {};
+      for (const sample of pointSamples) {
+        pointData[point][sample.date] = {};
+        for (const dissolved of dissolveds) {
+          if (sample.data[dissolved]) {
+            pointData[point][sample.date][dissolved] =
+              sample.data[dissolved].value;
+          }
+        }
+      }
+      console.log(pointData);
+    }
   }
 };
