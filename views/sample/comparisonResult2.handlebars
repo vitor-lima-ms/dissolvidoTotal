@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="row mt-3 mb-3 text-center">
+        <h1>Resultados</h1>
+    </div>
+    <div class="row">
+        {{#each comparisonResults}}
+        <h2>{{this.point}}</h2>
+        <div class="table-container" style="overflow: scroll; max-height: 540px;">
+            <table class="table table-hover">
+                <thead>
+                    <th style="min-width: 200px;">Data</th>
+                    {{#each ../headers}}
+                    <th style="min-width: 200px;">{{this}} dissolvido</th>
+                    <th style="min-width: 200px;">{{this}} total</th>
+                    <th style="min-width: 200px;">Resultado</th>
+                    {{/each}}
+                </thead>
+                <tbody>
+                    {{#each this.dates}}
+                    {{#if this.values}}
+                    <tr>
+                        <td style="min-width: 200px;">{{this.date}}</td>
+                        {{#each this.values}}
+                        <td style="min-width: 200px;">{{this.dissolved}}</td>
+                        <td style="min-width: 200px;">{{this.total}}</td>
+                        <td style="min-width: 200px;">{{this.result}}</td>
+                        {{/each}}
+                    </tr>
+                    {{/if}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{/each}}
+    </div>
+</div>
