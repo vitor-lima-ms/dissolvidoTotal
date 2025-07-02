@@ -18,17 +18,6 @@ const conn = require("./db/conn");
 // Handlebars
 const hbs = exphbs.create({
   partialsDir: ["views/partials"],
-  helpers: {
-    each_object: function (context, options) {
-      let ret = "";
-      for (const key in context) {
-        if (Object.prototype.hasOwnProperty.call(context, key)) {
-          ret += options.fn({ key: key, value: context[key] });
-        }
-      }
-      return ret;
-    },
-  },
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
