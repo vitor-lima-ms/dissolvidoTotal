@@ -5,6 +5,7 @@ const csv = require("csv-parser");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 const iconv = require("iconv-lite");
+const { type } = require("os");
 
 module.exports = class SampleController {
   static index(req, res) {
@@ -203,51 +204,89 @@ module.exports = class SampleController {
       totals = [totals];
     }
 
-    // const pointSamples = await Sample.findAll({
-    //   raw: true,
-    //   where: { point: pointName },
-    // });
+    const comparisonResults = [];
+    const headers = [];
 
-    // let data = [];
-    // for (const sample of pointSamples) {
-    //   if (sample.data[dissolved] && sample.data[total]) {
-    //     data.push({
-    //       date: sample.date,
-    //       dissolved: parseFloat(sample.data[dissolved].value.replace(",", ".")),
-    //       total: parseFloat(sample.data[total].value.replace(",", ".")),
-    //     });
-    //   }
-    // }
-
-    // for (const object of data) {
-    //   if (object.dissolved > object.total) {
-    //     object["result"] = "Erro";
-    //   } else {
-    //     object["result"] = "Ok";
-    //   }
-    // }
-
-    // res.render("sample/comparisonResult", { pointName, data });
-
-    const results = [];
+    for (let index = 0; index < dissolveds.length; index++) {
+      const header = String(dissolveds[index]).split(" ")[0];
+      headers.push(header);
+    }
 
     for (const point of pointsNames) {
       const pointSamples = await Sample.findAll({
         raw: true,
         where: { point: point },
+        order: [["date", "ASC"]],
       });
-      const pointData = {};
-      pointData[point] = {};
+
+      const pointDataResults = {
+        point: point,
+        dates: [],
+      };
+
       for (const sample of pointSamples) {
-        pointData[point][sample.date] = {};
-        for (const dissolved of dissolveds) {
-          if (sample.data[dissolved]) {
-            pointData[point][sample.date][dissolved] =
-              sample.data[dissolved].value;
+        let bulkRowValues = [];
+        const sampleDate = sample.date;
+
+        for (let index = 0; index < dissolveds.length; index++) {
+          const dissolvedParameter = dissolveds[index];
+          const totalParameter = totals[index];
+
+          let dissolvedValue;
+          if (sample.data[dissolvedParameter]) {
+            dissolvedValue = parseFloat(
+              String(sample.data[dissolvedParameter].value).replace(",", ".")
+            );
+          } else {
+            dissolvedValue = null;
+          }
+
+          let totalValue;
+          if (sample.data[totalParameter]) {
+            totalValue = parseFloat(
+              String(sample.data[totalParameter].value).replace(",", ".")
+            );
+          } else {
+            totalValue = null;
+          }
+
+          let result;
+          if (dissolvedValue !== null && totalValue !== null) {
+            if (dissolvedValue > totalValue) {
+              result = "Erro";
+            } else {
+              result = "Ok";
+            }
+          }
+
+          bulkRowValues.push({
+            dissolved: dissolvedValue,
+            total: totalValue,
+            result: result,
+          });
+        }
+
+        let cleanedRowValues = [];
+        for (const element of bulkRowValues) {
+          if (element.dissolved && element.total && element.result) {
+            cleanedRowValues.push(element);
           }
         }
+
+        pointDataResults.dates.push({
+          date: sampleDate,
+          values: cleanedRowValues,
+        });
       }
-      console.log(pointData);
+
+      if (pointDataResults.dates.length > 0) {
+        comparisonResults.push(pointDataResults);
+      }
     }
+
+    res.render("sample/comparisonResult2", {
+      comparisonResults,
+      headers,
+    });
   }
 };
